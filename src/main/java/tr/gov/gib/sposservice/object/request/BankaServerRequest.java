@@ -15,6 +15,7 @@ public class BankaServerRequest {
     private Integer ccv;
     private Integer sonKullanimTarihiAy;
     private Integer sonKullanimTarihiYil;
+    private String hash;
     private String kartSahibi;
 
 }
