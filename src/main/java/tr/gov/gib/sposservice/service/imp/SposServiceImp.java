@@ -60,7 +60,6 @@ public class SposServiceImp implements SposService {
                     .sonKullanimTarihiAy(sposRequest.getSonKullanimTarihiAy())
                     .sonKullanimTarihiYil(sposRequest.getSonKullanimTarihiYil())
                     .kartSahibi(sposRequest.getKartSahibi())
-                    .hash(generatedHash)  //hash ekle
                     .build();
             HttpEntity<BankaServerRequest> httpEntity = new HttpEntity<>(requestEntity);
 
