@@ -17,8 +17,9 @@ import tr.gov.gib.sposservice.object.reponse.SposResponse;
 import tr.gov.gib.sposservice.object.reponse.BankaServerResponse;
 import tr.gov.gib.sposservice.object.request.BankaServerRequest;
 import tr.gov.gib.sposservice.repository.SanalPosRepository;
-import tr.gov.gib.sanalpos.service.SposService;
+
 import tr.gov.gib.gibcore.util.HashUtil;
+import tr.gov.gib.sposservice.service.SposService;
 
 import java.util.Date;
 

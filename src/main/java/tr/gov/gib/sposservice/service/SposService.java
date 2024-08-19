@@ -1,4 +1,4 @@
-package tr.gov.gib.sanalpos.service;
+package tr.gov.gib.sposservice.service;
 
 import tr.gov.gib.gibcore.object.response.GibResponse;
 import tr.gov.gib.gibcore.object.reuest.GibRequest;

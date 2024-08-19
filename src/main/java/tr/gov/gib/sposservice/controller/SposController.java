@@ -10,7 +10,8 @@ import tr.gov.gib.gibcore.object.response.GibResponse;
 import tr.gov.gib.gibcore.object.reuest.GibRequest;
 import tr.gov.gib.sposservice.object.request.SposRequest;
 import tr.gov.gib.sposservice.object.reponse.SposResponse;
-import tr.gov.gib.sanalpos.service.SposService;
+import tr.gov.gib.sposservice.service.SposService;
+
 
 @RestController
 @RequiredArgsConstructor
