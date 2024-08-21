@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import tr.gov.gib.gibcore.exception.GibException;
 import tr.gov.gib.gibcore.object.response.GibResponse;
-import tr.gov.gib.gibcore.object.reuest.GibRequest;
+import tr.gov.gib.gibcore.object.request.GibRequest;
 import tr.gov.gib.gibcore.util.ServiceMessage;
-import tr.gov.gib.gibcore.util.enums.SanalPosDurum;
+import tr.gov.gib.gibcore.object.enums.FposSposNakitDurum;
 import tr.gov.gib.sposservice.entity.SanalPos;
 import tr.gov.gib.sposservice.object.request.SposRequest;
-import tr.gov.gib.sposservice.object.reponse.SposResponse;
-import tr.gov.gib.sposservice.object.reponse.BankaServerResponse;
+import tr.gov.gib.sposservice.object.response.SposResponse;
+import tr.gov.gib.sposservice.object.response.BankaServerResponse;
 import tr.gov.gib.sposservice.object.request.BankaServerRequest;
 import tr.gov.gib.sposservice.repository.SanalPosRepository;
 
@@ -71,7 +71,7 @@ public class SposServiceImp implements SposService {
             if (bankaResponse != null && bankaResponse.getOid() != null) {
                 if (!generatedHash.equals(bankaResponse.getHash())) {
                     // Hash uyuşmazlığı
-                    sanalPos.setDurum(SanalPosDurum.HATA.getdurumKodu());
+                    sanalPos.setDurum(FposSposNakitDurum.HATA_OLUSTU.getSposFposNakitDurumKodu());
                     sanalPos.setOptime(new Date());
                     sanalPosRepository.save(sanalPos);
                     return GibResponse.<SposResponse>builder()
@@ -82,9 +82,9 @@ public class SposServiceImp implements SposService {
 
                 // Banka yanıtına göre durum atama
                 if (bankaResponse.getStatus().equals("FAILURE")) {
-                    sanalPos.setDurum(SanalPosDurum.BASARISIZ.getdurumKodu());
+                    sanalPos.setDurum(FposSposNakitDurum.BASARISIZ_ODEME.getSposFposNakitDurumKodu());
                 } else if (bankaResponse.getStatus().equals("SUCCESS")) {
-                    sanalPos.setDurum(SanalPosDurum.BASARILI.getdurumKodu());
+                    sanalPos.setDurum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu());
                 }
             }
 
@@ -94,7 +94,7 @@ public class SposServiceImp implements SposService {
             SposResponse sposResponse = SposResponse.builder()
                     .oid(bankaResponse.getOid())
                     .odemeOid(sanalPos.getOdemeId())
-                    .durum(SanalPosDurum.BASARILI.getdurumKodu())
+                    .durum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu())
                     .bankaAdi(bankaResponse.getBankaAdi())
                     .build();
 
@@ -104,7 +104,7 @@ public class SposServiceImp implements SposService {
                     .build();
 
         } catch (Throwable e) {
-            sanalPos.setDurum(SanalPosDurum.HATA.getdurumKodu());
+            sanalPos.setDurum(FposSposNakitDurum.HATA_OLUSTU.getSposFposNakitDurumKodu());
             sanalPos.setOptime(new Date());
             sanalPosRepository.save(sanalPos);
             throw new GibException(e.getMessage());
