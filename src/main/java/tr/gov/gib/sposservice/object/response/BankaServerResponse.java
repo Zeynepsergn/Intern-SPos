@@ -1,4 +1,4 @@
-package tr.gov.gib.sposservice.object.reponse;
+package tr.gov.gib.sposservice.object.response;
 
 import lombok.Builder;
 import lombok.Data;
