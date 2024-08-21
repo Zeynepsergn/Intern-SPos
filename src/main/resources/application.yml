@@ -22,3 +22,13 @@ spring:
 banka:
   servis:
     url: http://localhost:7079/api/banka/odeme
+
+swagger:
+  info:
+    title: ${SWAGGER_TITLE}
+    version: ${SWAGGER_VERSION}
+    description: ${SWAGGER_DSC}
+    termsOfService: ${SWAGGER_TOS}
+    contact:
+      name: ${SWAGGER_NAME}
+      email: ${SWAGGER_EMAIL}
