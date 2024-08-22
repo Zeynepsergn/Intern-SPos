@@ -81,9 +81,9 @@ public class SposServiceImp implements SposService {
                 }
 
                 // Banka yanıtına göre durum atama
-                if (bankaResponse.getStatus().equals("FAILURE")) {
+                if (bankaResponse.getStatus().equals("Başarısız")) {
                     sanalPos.setDurum(FposSposNakitDurum.BASARISIZ_ODEME.getSposFposNakitDurumKodu());
-                } else if (bankaResponse.getStatus().equals("SUCCESS")) {
+                } else if (bankaResponse.getStatus().equals("Başarılı")) {
                     sanalPos.setDurum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu());
                 }
             }
