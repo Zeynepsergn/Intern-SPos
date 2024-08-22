@@ -21,6 +21,8 @@ import tr.gov.gib.sposservice.repository.SanalPosRepository;
 import tr.gov.gib.gibcore.util.HashUtil;
 import tr.gov.gib.sposservice.service.SposService;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Service("SposService")
@@ -40,22 +42,22 @@ public class SposServiceImp implements SposService {
         String generatedHash = HashUtil.generateSHA256(
                 sposRequest.getOid(),
                 sposRequest.getKartNo(),
-                String.valueOf(sposRequest.getTutar())
+                String.valueOf(sposRequest.getOdenecekMiktar())
         );
 
-        // sanalPos oluştur
+        // sanalPosABC oluştur
         SanalPos sanalPos = new SanalPos();
         sanalPos.setOid(sposRequest.getOid());
-        sanalPos.setOdemeId(sposRequest.getOdemeOid());
+        sanalPos.setOdeme(sposRequest.getOdemeOid());
         sanalPos.setKartSahibi(sposRequest.getKartSahibi());
-        sanalPos.setKartBanka(sposRequest.getKartBanka());
+//        sanalPosABC.setKartBanka(sposRequest.getKartBanka());
 
         // bankaya istek gönder
         RestTemplate restTemplate = new RestTemplate();
         try {
             BankaServerRequest requestEntity = BankaServerRequest.builder()
                     .oid(sposRequest.getOid())
-                    .odenecekTutar(sposRequest.getTutar())
+                    .odenecekTutar(sposRequest.getOdenecekMiktar())
                     .kartNo(sposRequest.getKartNo())
                     .ccv(sposRequest.getCcv())
                     .sonKullanimTarihiAy(sposRequest.getSonKullanimTarihiAy())
@@ -72,7 +74,7 @@ public class SposServiceImp implements SposService {
                 if (!generatedHash.equals(bankaResponse.getHash())) {
                     // Hash uyuşmazlığı
                     sanalPos.setDurum(FposSposNakitDurum.HATA_OLUSTU.getSposFposNakitDurumKodu());
-                    sanalPos.setOptime(new Date());
+                    sanalPos.setOptime(OffsetDateTime.now(ZoneId.systemDefault()));
                     sanalPosRepository.save(sanalPos);
                     return GibResponse.<SposResponse>builder()
                             .service(ServiceMessage.FAIL)
@@ -81,19 +83,20 @@ public class SposServiceImp implements SposService {
                 }
 
                 // Banka yanıtına göre durum atama
-                if (bankaResponse.getStatus().equals("Başarısız")) {
+                if (bankaResponse.getStatus().equals("FAILURE")) {
                     sanalPos.setDurum(FposSposNakitDurum.BASARISIZ_ODEME.getSposFposNakitDurumKodu());
-                } else if (bankaResponse.getStatus().equals("Başarılı")) {
+                } else if (bankaResponse.getStatus().equals("SUCCESS")) {
                     sanalPos.setDurum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu());
                 }
             }
 
-            sanalPos.setOptime(new Date());
+            sanalPos.setOptime(OffsetDateTime.now(ZoneId.systemDefault()));
+            sanalPos.setKartBanka(bankaResponse.getBankaAdi());
             sanalPosRepository.save(sanalPos);
 
             SposResponse sposResponse = SposResponse.builder()
                     .oid(bankaResponse.getOid())
-                    .odemeOid(sanalPos.getOdemeId())
+                    .odemeOid(sanalPos.getOdeme())
                     .durum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu())
                     .bankaAdi(bankaResponse.getBankaAdi())
                     .build();
@@ -105,7 +108,7 @@ public class SposServiceImp implements SposService {
 
         } catch (Throwable e) {
             sanalPos.setDurum(FposSposNakitDurum.HATA_OLUSTU.getSposFposNakitDurumKodu());
-            sanalPos.setOptime(new Date());
+            sanalPos.setOptime(OffsetDateTime.now(ZoneId.systemDefault()));
             sanalPosRepository.save(sanalPos);
             throw new GibException(e.getMessage());
         }

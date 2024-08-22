@@ -1,5 +1,7 @@
 server:
   port: ${PORT}
+  servlet:
+    context-path: /spos-server
 
 spring:
   application:
@@ -21,7 +23,7 @@ spring:
 
 banka:
   servis:
-    url: http://localhost:7079/api/banka/odeme
+    url: http://localhost:8080/api/banka/odeme
 
 swagger:
   info:

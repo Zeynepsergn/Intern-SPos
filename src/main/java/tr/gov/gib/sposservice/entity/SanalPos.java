@@ -5,8 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -14,15 +13,13 @@ import java.util.Date;
 @Table(name = "sanal_pos", schema = "gsths")
 public class SanalPos {
     @Id
-    @Size(max = 10)
-    @SequenceGenerator(name = "sanal_pos_id_gen", sequenceName = "vergi_odeme_tur_vergi_tur_id_seq", allocationSize = 1)
-    @Column(name = "oid", nullable = false, length = 10)
+    @Size(max = 20)
+    @SequenceGenerator(name = "sanal_pos_id_gen", sequenceName = "odeme_odeme_id_seq", allocationSize = 1)
+    @Column(name = "oid", nullable = false, length = 20)
     private String oid;
 
-
     @Column(name = "odeme_id")
-    private Integer odemeId;
-
+    private Integer odeme;
 
     @Size(max = 100)
     @Column(name = "kart_sahibi", length = 100)
@@ -33,7 +30,7 @@ public class SanalPos {
     private String kartBanka;
 
     @Column(name = "optime")
-    private Date optime;
+    private OffsetDateTime optime;
 
     @Column(name = "durum")
     private Short durum;

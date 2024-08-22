@@ -13,5 +13,5 @@ public class SposRequest {
     private Integer sonKullanimTarihiYil; // Kartın son kullanma yılı
     private String kartSahibi;         // Kart sahibinin adı
     private String kartBanka;          // Kartın bağlı olduğu banka
-    private BigDecimal tutar;          // Ödenecek tutar
+    private BigDecimal odenecekMiktar;          // Ödenecek tutar
 }
