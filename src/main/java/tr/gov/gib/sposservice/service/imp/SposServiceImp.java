@@ -32,6 +32,9 @@ public class SposServiceImp implements SposService {
     @Value("${banka.servis.url}")
     private String bankaServisUrl;
 
+    @Value("${banka.salt}")
+    private String salt;  // Tuz değerini tanımlama
+
     private final SanalPosRepository sanalPosRepository;
 
     @Override
@@ -42,7 +45,8 @@ public class SposServiceImp implements SposService {
         String generatedHash = HashUtil.generateSHA256(
                 sposRequest.getOid(),
                 sposRequest.getKartNo(),
-                String.valueOf(sposRequest.getOdenecekMiktar())
+                String.valueOf(sposRequest.getOdenecekMiktar()),
+                salt
         );
 
         // sanalPosABC oluştur

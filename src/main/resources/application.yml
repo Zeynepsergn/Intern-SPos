@@ -22,6 +22,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 banka:
+  salt: ${HASH_SALT}
   servis:
     url: http://localhost:8080/api/banka/odeme
 
@@ -34,3 +35,4 @@ swagger:
     contact:
       name: ${SWAGGER_NAME}
       email: ${SWAGGER_EMAIL}
+
