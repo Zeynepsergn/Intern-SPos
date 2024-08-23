@@ -23,7 +23,6 @@ import tr.gov.gib.sposservice.service.SposService;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 
 @Service("SposService")
 @RequiredArgsConstructor
@@ -73,6 +72,9 @@ public class SposServiceImp implements SposService {
             BankaServerResponse bankaResponse = restTemplate.exchange(
                     bankaServisUrl, HttpMethod.POST, httpEntity, BankaServerResponse.class).getBody();
 
+            SposResponse sposResponse = new SposResponse();
+
+            String status = "";
             // Hash doğrulama
             if (bankaResponse != null && bankaResponse.getOid() != null) {
                 if (!generatedHash.equals(bankaResponse.getHash())) {
@@ -85,23 +87,18 @@ public class SposServiceImp implements SposService {
                             .data(null)
                             .build();
                 }
-
-                // Banka yanıtına göre durum atama
-                if (bankaResponse.getStatus().equals("FAILURE")) {
-                    sanalPos.setDurum(FposSposNakitDurum.BASARISIZ_ODEME.getSposFposNakitDurumKodu());
-                } else if (bankaResponse.getStatus().equals("SUCCESS")) {
-                    sanalPos.setDurum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu());
-                }
+                status = bankaResponse.getStatus();
             }
 
             sanalPos.setOptime(OffsetDateTime.now(ZoneId.systemDefault()));
             sanalPos.setKartBanka(bankaResponse.getBankaAdi());
+            sanalPos.setDurum(resolveDurum(status));
             sanalPosRepository.save(sanalPos);
 
-            SposResponse sposResponse = SposResponse.builder()
+            sposResponse = SposResponse.builder()
                     .oid(bankaResponse.getOid())
                     .odemeOid(sanalPos.getOdeme())
-                    .durum(FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu())
+                    .durum(resolveDurum(status))
                     .bankaAdi(bankaResponse.getBankaAdi())
                     .build();
 
@@ -116,5 +113,11 @@ public class SposServiceImp implements SposService {
             sanalPosRepository.save(sanalPos);
             throw new GibException(e.getMessage());
         }
+    }
+
+    private static Short resolveDurum(String status){
+        return status.equals("SUCCESS") ?
+                FposSposNakitDurum.BASARILI_ODEME.getSposFposNakitDurumKodu() :
+                FposSposNakitDurum.BASARISIZ_ODEME.getSposFposNakitDurumKodu();
     }
 }
