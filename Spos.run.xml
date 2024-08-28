@@ -15,7 +15,7 @@
       <env name="SWAGGER_EMAIL" value="rumeysa.incebay@gelirler.gov.tr" />
       <env name="HASH_SALT" value="38A74D716E65EB18D3331B4CE54013555BA388034508496FBE3A0BACECAAC6C7" />
     </envs>
-    <module name="SPosService.main" />
+    <module name="spos-service.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="tr.gov.gib.sposservice.SPosServiceApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
